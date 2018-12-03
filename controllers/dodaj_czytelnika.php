@@ -21,14 +21,17 @@
           <input type="text" name="adres_dodaj" maxlength="40" size="40" id="adres_dodaj" required /><br>
           E-mail:</br>
           <input type="text" name="email_dodaj" maxlength="40" size="40" id="email_dodaj" required /><br>
+          <!-- Login z systemu logowania konta -->
+          Login:</br>
+          <input type="text" name="login" maxlength="40" size="40" id="login" required /><br>
           <!--
           Ulica:
           <input type="text" name="ulica_dodaj" maxlength="20" size="20" id="ulica_dodaj" required /><br>
         -->
-
+<!--
           Hasło:
           <input type="password" name="haslo_dodaj" maxlength="20" size="20" id="haslo_dodaj" required /><br>
-
+-->
         <input type="submit" value="Dodaj czytelnika" class="button" id="button" />
         </form>
 

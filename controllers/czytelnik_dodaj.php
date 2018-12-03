@@ -23,6 +23,8 @@ $imie_dodaj = $_POST['imie_dodaj'];
 $nazwisko_dodaj = $_POST['nazwisko_dodaj'];
 $adres_dodaj = $_POST['adres_dodaj'];
 $email_dodaj = $_POST['email_dodaj'];
+
+$login = $_POST['login'];
 //$haslo_dodaj = $_POST['nazwisko_dodaj'];//TODO haslo podaje czytelnik w czasie rejestracji
 
 
@@ -31,27 +33,92 @@ $imie_dodaj = htmlentities($imie_dodaj , ENT_QUOTES, "UTF-8");
 $nazwisko_dodaj  = htmlentities($nazwisko_dodaj , ENT_QUOTES, "UTF-8");
 $adres_dodaj  = htmlentities($adres_dodaj , ENT_QUOTES, "UTF-8");
 $email_dodaj  = htmlentities($email_dodaj , ENT_QUOTES, "UTF-8");
-//$haslo_dodaj  = htmlentities($haslo_dodaj , ENT_QUOTES, "UTF-8");
 
-$tabela = 'users';
+$login  = htmlentities($login , ENT_QUOTES, "UTF-8");
 
-$result = mysqli_query ($polaczenie, "SELECT * FROM $tabela WHERE nazwisko = '$nazwisko_dodajn' AND imie = '$imie_dodaj' AND email = '$email_dodaj' "); //spr czy istnieje dany login
+// TODO Spr czy login istnieje
+$tabela = 'logowanie';
+
+$result = mysqli_query ($polaczenie, "SELECT * FROM $tabela WHERE login = '$login' "); //spr czy istnieje dany login
 $num_rows = mysqli_num_rows($result);
 
-if ($num_rows < 1){  //idywidualny login? - kontrola
-$ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (imie, nazwisko, email, adres) VALUES ('$imie_dodaj', '$nazwisko_dodaj', '$adres_dodaj', '$email_dodaj') ");
-//$ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (login, haslo, nazwa_klienta) VALUES ('$rejestracja_login ', '$rejestracja_haslo', '$rejestracja_nazwa') ");
+if ($num_rows == 1){  //idywidualny login? - kontrola
+      $ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (imie_czytelnik, nazwisko_czytelnik, email_czytelnik, adres_czytelnik, login)
+      VALUES ('$imie_dodaj', '$nazwisko_dodaj', '$email_dodaj', '$adres_dodaj', '$login') ");
 
-      if($ins) {
-        echo "Rejestracja zakończona poprawnie ";
+      $tabela = 'czytelnik';
 
-      }else {
-        echo "Błąd rejestracji ";
+      $result = mysqli_query ($polaczenie, "SELECT * FROM $tabela WHERE nazwisko_czytelnik = '$nazwisko_dodaj' AND imie_czytelnik = '$imie_dodaj' AND adres_czytelnik = '$email_dodaj' "); //spr czy istnieje dany login
+      $num_rows = mysqli_num_rows($result);
+
+      if ($num_rows < 1){  //jest już taki czytelnik? - kontrola
+      $ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (imie_czytelnik, nazwisko_czytelnik, email_czytelnik, adres_czytelnik, login)
+      VALUES ('$imie_dodaj', '$nazwisko_dodaj', '$email_dodaj', '$adres_dodaj', '$login') ");
+      //$ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (login, haslo, nazwa_klienta) VALUES ('$rejestracja_login ', '$rejestracja_haslo', '$rejestracja_nazwa') ");
+      /*
+            if($ins) {
+              echo "Rejestracja zakończona poprawnie ";
+
+            }else {
+              echo "Błąd rejestracji ";
+            }
+
+      } else {
+        echo "User już taki istnieje! ";
       }
 
+      print '</br><a href = "../Bibliotekarz.php">Wróć</a>';
+      */
+      print '<link href="../views/styles.css" rel="stylesheet">';
+
+      print '<div class="frame-alert">';
+
+      if($ins) echo "Dodano czytelnika ";
+        else echo "Błąd, nie udało się dodać czytelnika ";
+        skryptpowrotu();
+
+      } else {
+      print '<link href="../views/styles.css" rel="stylesheet">';
+
+      print '<div class="frame-alert">';
+      echo "Nie można dodać. Już taki czytelnik istnieje";
+      skryptpowrotu();
+
+      }
 } else {
-  echo "User już taki istnieje! ";
+  print '<link href="../views/styles.css" rel="stylesheet">';
+
+  print '<div class="frame-alert">';
+
+  echo "Błąd, nie ma takiego loginu ";
+    skryptpowrotu();
 }
 
-print '</br><a href = "../Bibliotekarz.php">Wróć</a>';
+
+/*
+}
+} else{
+print '<link href="../views/styles.css" rel="stylesheet">';
+
+print '<div class="frame-alert">';
+echo "Zaloguj się by zamówić pozycję. <br>";
+skryptpowrotu();
+
+}
+*/
+function skryptpowrotu(){
+print'<br>
+<button onclick="goBack()">Powrót</button>
+
+<script>
+function goBack() {
+window.history.back();
+}
+</script>
+';
+
+
+print '</div>';
+}
+
 ?>
