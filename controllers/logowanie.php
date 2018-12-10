@@ -65,7 +65,13 @@
                 if($upd) echo "Rekord został zmieniony poprawnie ";
                         else echo "Błąd, nie udało się dodać nowego rekordu ";
                         */
-              header('Location: ../index.php');
+            // TODO Jak sposób weryfikacji bibliotekarza?
+                if ( substr($login, 0, 12) == ("bibliotekarz"))
+                {
+                  header('Location: ../bibliotekarz.php');
+                } else {
+                  header('Location: ../czytelnik.php');
+                }
 
             } else {
 

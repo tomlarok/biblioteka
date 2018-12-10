@@ -5,10 +5,25 @@
       <!-- <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModal" id="button"> -->
         Załóż konto
       </button>
-      <button class="button" data-toggle="modal" data-target="#myModalLog" id="button">
-      <!--   <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalLog" id="button"> -->
-        Zaloguj się
-      </button>
+<?php
+  if (!isset($_SESSION['zalogowany']))
+  //  if ((!isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
+  {
+    print '<button class="button" data-toggle="modal" data-target="#myModalLog" id="button">';
+    /*<!--   <button class="btn btn-primary btn-lg" data-toggle="modal" data-target="#myModalLog" id="button"> -->*/
+    print 'Zaloguj się';
+    print'</button>';
+  } else {
+    print '<a href = "./controllers/logout.php"';
+    //    print '<button class="button" id="button" action="./controllers/logout.php">';
+    print '<button class="button" id="button">';
+    print 'Wyloguj';
+    print'</button></a>';
+  //  print '<br><a href = "./controllers/logout.php">Wyloguj</a></br>';
+  }
+?>
+
+
 
       <!-- Modal -->
       <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
@@ -16,7 +31,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Zamknij</span></button>
-              <h4 class="modal-title" id="myModalLabel">Stwórz konto</h4>
+      <!--        <h4 class="modal-title" id="myModalLabel">Stwórz konto</h4> -->
             </div>
             <div class="modal-body">
               <h3 class = "logText"> Rejestacja </h3></br>
@@ -59,7 +74,7 @@
           <div class="modal-content">
             <div class="modal-header">
               <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Zamknij</span></button>
-              <h4 class="modal-title" id="myModalLabelLog">Logowanie</h4>
+      <!--        <h4 class="modal-title" id="myModalLabelLog">Logowanie</h4> -->
             </div>
             <div class="modal-body">
               <h3 class = "logText"> Logowanie </h3></br>

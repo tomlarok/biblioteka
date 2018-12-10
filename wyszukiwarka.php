@@ -1,4 +1,5 @@
-<form class="form" id="Formularz_wyszukaj" name="Formularz_wyszukaj" method="POST" action="./controllers/wyszukaj.php">
+<form class="form" id="Formularz_wyszukaj" name="Formularz_wyszukaj" method="POST" action="./lista_wyszukiwania.php">
+  <!-- <form class="form" id="Formularz_wyszukaj" name="Formularz_wyszukaj" method="POST" action="./controllers/wyszukaj.php"> -->
 <br>
 
     Tytuł:
