@@ -125,7 +125,30 @@ if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
 
 <ul id="mainmenu" class="panel topnav">
   <li><a class="mainmenu-item" href="index.php">Strona Główna</a></li>
-  <li><a class="mainmenu-item" href="#wyszukiwarka">Katalog  online</a></li>
-  <li><a class="mainmenu-item" href="#kontakt">Kontakt</a></li> <!-- <li><a class="mainmenu-item" href="index.php/#kontakt">Kontakt</a></li> -->
-  <li><a class="mainmenu-item" href="#o_nas">O nas</a></li>
+  <li><a class="mainmenu-item" href="index.php#wyszukiwarka">Katalog  online</a></li>
+  <li><a class="mainmenu-item" href="index.php#kontakt">Kontakt</a></li> <!-- <li><a class="mainmenu-item" href="index.php/#kontakt">Kontakt</a></li> -->
+  <li><a class="mainmenu-item" href="index.php#o_nas">O nas</a></li>
+  <?php
+  if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
+  {
+    //    if (!isset($_COOKIE['bibliotekarz'])){
+  //  if (isset($_COOKIE['bibliotekarz'])){ // TODO czemu nie widzi ciacha??
+    if ( substr($user, 0, 12) == ("bibliotekarz"))
+    {
+      print '
+      <li><a class="mainmenu-item" href="bibliotekarz.php">Bibliotekarz konto</a></li>
+      ';
+    }else{
+      print '
+      <li><a class="mainmenu-item" href="czytelnik.php">Moje konto</a></li>
+      ';
+
+    }
+  }
+  ?>
 </ul>
+
+
+<?php
+
+?>

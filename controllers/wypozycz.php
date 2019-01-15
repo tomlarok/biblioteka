@@ -30,13 +30,18 @@ if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
         echo $id_czytelnik;
 
         $tabela = "zamowienie";
-          $rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE id_ksiazka = '$id_ksiazka' AND id_czytelnik = '$id_czytelnik' ");
+          //$rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE id_ksiazka = '$id_ksiazka' AND id_czytelnik = '$id_czytelnik' ");
+          $rezultat = mysqli_query ($polaczenie, "CALL wypozycz_Szamowienie($id_ksiazka, $id_czytelnik)");
           $num_rows = mysqli_num_rows($rezultat);
           if ($num_rows == 1){
 
           $tabela2 = "wypozyczenia";
+          /*
           $ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela2 (id_czytelnik, id_ksiazka, data_wypozyczenia)
           VALUES ($id_czytelnik, $id_ksiazka, NOW() )");
+          */
+          $polaczenie->next_result();
+          $ins = mysqli_query ($polaczenie, "CALL wypozycz_Iwypozyczenia($id_czytelnik, $id_ksiazka)"); //TODO nie działa z app
           //$ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (id_czytelnik, id_ksiazka, data_zamowienia, data_odbioru, data_zwrotu) VALUES ('$id_czytelnik', '$id_ksiazka', NOW(), NOW(), NOW() ) ");
           //$ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (login, haslo, nazwa_klienta) VALUES ('$rejestracja_login ', '$rejestracja_haslo', '$rejestracja_nazwa') ");
 
@@ -45,8 +50,8 @@ if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
 
             print '<div class="frame-alert">';
 
-            if($ins) echo "Zamówienie zostało przyjęte ";
-              else echo "Błąd, nie udało się dodać zamówienia ";
+            if($ins) echo "Wypożyczenie zrealizowane ";
+              else echo "Błąd wypożyczenia ";
               skryptpowrotu();
             //print'<a href = "../index.php">Powrót</a>';
             /*

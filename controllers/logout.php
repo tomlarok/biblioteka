@@ -5,6 +5,7 @@
     session_unset();  //niszczenie sesji
 // niszczenie COOOKIES
     setcookie('zalogowany', '', time() - 60*60*3);
+    setcookie('bibliotekarz', '', time() - 60*60*3);
 
     //header('Location: ../index.php ');
     print '<link href="../views/styles.css" rel="stylesheet">';

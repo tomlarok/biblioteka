@@ -68,6 +68,7 @@
             // TODO Jak sposób weryfikacji bibliotekarza?
                 if ( substr($login, 0, 12) == ("bibliotekarz"))
                 {
+                  setcookie('bibliotekarz', $nick, time() + 60*60*3);  // dodanie ciacha bibliotekarz
                   header('Location: ../bibliotekarz.php');
                 } else {
                   header('Location: ../czytelnik.php');

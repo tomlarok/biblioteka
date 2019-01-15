@@ -36,7 +36,7 @@ else{
   $keywords = htmlentities($keywords, ENT_QUOTES, "UTF-8");
   $rok = htmlentities($rok, ENT_QUOTES, "UTF-8");
 
-// TODO dok ..
+// TODO Wyświetlanie dostępności książki dla zalogowanych
 
   $tabela = "ksiazka";
 
@@ -47,8 +47,9 @@ else{
 //  if (!empty($tytul))
   $lp = 1;
 
-  if (isset($tytul)){
-      $rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE tytul = '$tytul' ");
+  if (isset($tytul) && !empty($tytul)){
+      //$rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE tytul = '$tytul' ");
+      $rezultat = mysqli_query ($polaczenie, "CALL wyszukajTytul ('$tytul')");
 
       while ($wiersz = @mysqli_fetch_array ($rezultat)){
     //  $wiersz = mysqli_fetch_array ($rezultat);
@@ -62,31 +63,45 @@ else{
         $wydawnictwo = $wiersz ['wydawnictwo'];
         $rok_wydania = $wiersz ['rok_wydania'];
         $opis = $wiersz ['opis'];
-      //  $keywords = $wiersz ['keywords']; // TODO Brak keywords w BD !!!
+        $keywords = $wiersz ['keywords'];
+        $dostepnosc = $wiersz ['dostepnosc'];
         $tabela2 = "kategoria";
-        $rezultat2 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela2 WHERE id_kategoria = '$id_kategoria' ");
+        //$rezultat2 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela2 WHERE id_kategoria = '$id_kategoria' ");
+        $polaczenie->next_result();
+        $rezultat2 = mysqli_query ($polaczenie, "CALL wyszukajKategoria('$id_kategoria')");
         $wiersz2 = mysqli_fetch_array ($rezultat2);
         $kategoria = $wiersz2 ['nazwa'];
 
-        $keywords = "BRAK";
+        //$keywords = "BRAK";
 
 
         print '
         <TR>
           <TD>'; echo $lp; print'</TD><TD>'; echo $tytul; print'</TD><TD>'; echo $autor; print'</TD><TD>';
           echo $kategoria; print'</TD><TD>'; echo $wydawnictwo; print'</TD><TD>'; echo $rok_wydania; print'</TD><TD>';
-          echo $stron;  print'</TD><TD>'; echo $opis; print'</TD><TD>'; echo $keywords; print'
+          echo $stron;  print'</TD><TD>'; echo $opis; print'</TD><TD>'; echo $keywords;
+          print'
           </TD><TD><a href="./controllers/zamowienie_dodaj.php?id_ksiazka='; echo $id_ksiazka;
-          print'">Zamów i wypożycz</a></br>
-        </TR>
-        ';
+          print'">Zamów i wypożycz</a></br>';
+          if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
+          {
+            if ($dostepnosc == "Tak"){
+              echo '<br>Dostępna<br>';
+              print '<img src="./views/img/dostepnosc.png" class="icon" alt="Img dostp?" ';
+            }
+          }
+          print'
+          </TR>
+          ';
 
         $lp ++;
       }
+    //  exit();
   }
 
-  if (isset($autor)){
-      $rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE autor = '$autor' ");
+  if (isset($autor) && !empty($autor)){
+      //$rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE autor = '$autor' ");
+      $rezultat = mysqli_query ($polaczenie, "CALL wyszukajAutor('$autor')");
 
       while ($wiersz = @mysqli_fetch_array ($rezultat)){
     //  $wiersz = mysqli_fetch_array ($rezultat);
@@ -100,13 +115,16 @@ else{
         $wydawnictwo = $wiersz ['wydawnictwo'];
         $rok_wydania = $wiersz ['rok_wydania'];
         $opis = $wiersz ['opis'];
-      //  $keywords = $wiersz ['keywords']; // TODO Brak keywords w BD !!!
+        $keywords = $wiersz ['keywords'];
+        $dostepnosc = $wiersz ['dostepnosc'];
         $tabela2 = "kategoria";
-        $rezultat2 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela2 WHERE id_kategoria = '$id_kategoria' ");
+        //$rezultat2 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela2 WHERE id_kategoria = '$id_kategoria' ");
+        $polaczenie->next_result();
+        $rezultat2 = mysqli_query ($polaczenie, "CALL wyszukajKategoria('$id_kategoria')");
         $wiersz2 = mysqli_fetch_array ($rezultat2);
         $kategoria = $wiersz2 ['nazwa'];
 
-        $keywords = "BRAK";
+        //$keywords = "BRAK";
 
 
         print '
@@ -115,16 +133,26 @@ else{
           echo $kategoria; print'</TD><TD>'; echo $wydawnictwo; print'</TD><TD>'; echo $rok_wydania; print'</TD><TD>';
           echo $stron;  print'</TD><TD>'; echo $opis; print'</TD><TD>'; echo $keywords; print'
           </TD><TD><a href="./controllers/zamowienie_dodaj.php?id_ksiazka='; echo $id_ksiazka;
-          print'">Zamów i wypożycz</a></br>
-        </TR>
-        ';
+          print'">Zamów i wypożycz</a></br>';
+          if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
+          {
+            if ($dostepnosc == "Tak"){
+              echo '<br>Dostępna<br>';
+              print '<img src="./views/img/dostepnosc.png" class="icon" alt="Img dostp?" ';
+            }
+          }
+          print'
+          </TR>
+          ';
 
         $lp ++;
       }
+    //  exit();
   }
 
-  if (isset($keywords)){
-      $rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE keywords = '$keywords' ");
+  if (isset($keywords) && !empty($keywords)){
+      //$rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE keywords = '$keywords' ");
+      $rezultat = mysqli_query ($polaczenie, "CALL wyszukajKeyword('$keywords')");
 
       while ($wiersz = @mysqli_fetch_array ($rezultat)){
     //  $wiersz = mysqli_fetch_array ($rezultat);
@@ -138,13 +166,16 @@ else{
         $wydawnictwo = $wiersz ['wydawnictwo'];
         $rok_wydania = $wiersz ['rok_wydania'];
         $opis = $wiersz ['opis'];
-      //  $keywords = $wiersz ['keywords']; // TODO Brak keywords w BD !!!
+        $keywords = $wiersz ['keywords'];
+        $dostepnosc = $wiersz ['dostepnosc'];
         $tabela2 = "kategoria";
-        $rezultat2 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela2 WHERE id_kategoria = '$id_kategoria' ");
+        //$rezultat2 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela2 WHERE id_kategoria = '$id_kategoria' ");
+        $polaczenie->next_result();
+        $rezultat2 = mysqli_query ($polaczenie, "CALL wyszukajKategoria('$id_kategoria')");
         $wiersz2 = mysqli_fetch_array ($rezultat2);
         $kategoria = $wiersz2 ['nazwa'];
 
-        $keywords = "BRAK";
+        //$keywords = "BRAK";
 
 
         print '
@@ -153,17 +184,27 @@ else{
           echo $kategoria; print'</TD><TD>'; echo $wydawnictwo; print'</TD><TD>'; echo $rok_wydania; print'</TD><TD>';
           echo $stron;  print'</TD><TD>'; echo $opis; print'</TD><TD>'; echo $keywords; print'
           </TD><TD><a href="./controllers/zamowienie_dodaj.php?id_ksiazka='; echo $id_ksiazka;
-          print'">Zamów i wypożycz</a></br>
-        </TR>
-        ';
+          print'">Zamów i wypożycz</a></br>';
+          if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
+          {
+            if ($dostepnosc == "Tak"){
+              echo '<br>Dostępna<br>';
+              print '<img src="./views/img/dostepnosc.png" class="icon" alt="Img dostp?" ';
+            }
+          }
+          print'
+          </TR>
+          ';
 
         $lp ++;
       }
+  //    exit();
   }
 
 
-  if (isset($rok)){
-      $rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE rok_wydania = '$rok' ");
+  if (isset($rok) && !empty($rok)){
+      //$rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE rok_wydania = '$rok' ");
+      $rezultat = mysqli_query ($polaczenie, "CALL wyszukajRok('$rok')");
 
       while ($wiersz = @mysqli_fetch_array ($rezultat)){
     //  $wiersz = mysqli_fetch_array ($rezultat);
@@ -177,13 +218,16 @@ else{
         $wydawnictwo = $wiersz ['wydawnictwo'];
         $rok_wydania = $wiersz ['rok_wydania'];
         $opis = $wiersz ['opis'];
-      //  $keywords = $wiersz ['keywords']; // TODO Brak keywords w BD !!!
+        $keywords = $wiersz ['keywords'];
+        $dostepnosc = $wiersz ['dostepnosc'];
         $tabela2 = "kategoria";
-        $rezultat2 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela2 WHERE id_kategoria = '$id_kategoria' ");
+        //$rezultat2 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela2 WHERE id_kategoria = '$id_kategoria' ");
+        $polaczenie->next_result();
+        $rezultat2 = mysqli_query ($polaczenie, "CALL wyszukajKategoria('$id_kategoria')");
         $wiersz2 = mysqli_fetch_array ($rezultat2);
         $kategoria = $wiersz2 ['nazwa'];
 
-        $keywords = "BRAK";
+        //$keywords = "BRAK";
 
 
         print '
@@ -192,12 +236,21 @@ else{
           echo $kategoria; print'</TD><TD>'; echo $wydawnictwo; print'</TD><TD>'; echo $rok_wydania; print'</TD><TD>';
           echo $stron;  print'</TD><TD>'; echo $opis; print'</TD><TD>'; echo $keywords; print'
           </TD><TD><a href="./controllers/zamowienie_dodaj.php?id_ksiazka='; echo $id_ksiazka;
-          print'">Zamów i wypożycz</a></br>
-        </TR>
-        ';
+          print'">Zamów i wypożycz</a></br>';
+          if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
+          {
+            if ($dostepnosc == "Tak"){
+              echo '<br>Dostępna<br>';
+              print '<img src="./views/img/dostepnosc.png" class="icon" alt="Img dostp?" ';
+            }
+          }
+          print'
+          </TR>
+          ';
 
         $lp ++;
       }
+  //    exit();
   }
 }
 

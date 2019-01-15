@@ -27,17 +27,24 @@ $rejestracja_login = htmlentities($rejestracja_login, ENT_QUOTES, "UTF-8");
 $rejestracja_haslo  = htmlentities($rejestracja_haslo , ENT_QUOTES, "UTF-8");
 
 $tabela = 'logowanie';
-
-$result = mysqli_query ($polaczenie, "SELECT * FROM $tabela WHERE login = '$rejestracja_login' "); //spr czy istnieje dany login
+$polaczenie->next_result();
+//$result = mysqli_query ($polaczenie, "SELECT * FROM $tabela WHERE login = '$rejestracja_login' "); //spr czy istnieje dany login
+$result = mysqli_query ($polaczenie, "CALL czytelnik_dodajSLogin('$rejestracja_login')"); //spr czy istnieje dany login
 $num_rows = mysqli_num_rows($result);
 
+print '<link href="../views/styles.css" rel="stylesheet">';
+print '<div class="frame-alert">';
+
 if ($num_rows < 1){  //idywidualny login? - kontrola
-$ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (login, password) VALUES ('$rejestracja_login ', '$rejestracja_haslo') ");
+//$ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (login, password) VALUES ('$rejestracja_login ', '$rejestracja_haslo') ");
+$polaczenie->next_result();
+$ins = mysqli_query ($polaczenie, "CALL rejestracja_dodajIuser('$rejestracja_login ', '$rejestracja_haslo')");
+
 //$ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (login, haslo, nazwa_klienta) VALUES ('$rejestracja_login ', '$rejestracja_haslo', '$rejestracja_nazwa') ");
+
 
       if($ins) {
         echo "Rejestracja zakończona poprawnie ";
-
       }else {
         echo "Błąd rejestracji ";
       }
@@ -45,6 +52,22 @@ $ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (login, password
 } else {
   echo "Podaj inny login ";
 }
+skryptpowrotu();
 
-print '</br><a href = "../index.php">Strona Główna</a>';
+
+  function skryptpowrotu(){
+    print'<br>
+    <button onclick="goBack()">Powrót</button>
+
+   <script>
+   function goBack() {
+       window.history.back();
+   }
+   </script>
+    ';
+
+
+    print '</div>';
+  }
+
 ?>

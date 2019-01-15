@@ -1,3 +1,19 @@
+<?php
+
+    session_start();
+
+    if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true) && isset($_COOKIE['bibliotekarz']))
+    {
+
+      echo "Witaj";
+    } else {
+      header('Location: index.php');
+      exit(); //wyjscie z strony bez wczytania ponizszych linijek kodu
+    }
+
+
+?>
+
 <html>
   <head>
     <?php include('head.php'); ?>
@@ -13,16 +29,7 @@ $id = $_SESSION['id'];
 
   //połączenie z BD
   $polaczenie = @new mysqli($db_host, $db_user, $db_password, $db_name);
-/*
-    // zalogowany jako??
-    if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
-    {
-      print '<p align = "right">';
-      echo "Witaj ".$_SESSION['user'];
-      print '<br><a href = "./controllers/logout.php">Wyloguj</a></br>';
-      print '</p>';
-    }
-*/
+
   ?>
 
 <nav>
@@ -30,12 +37,6 @@ $id = $_SESSION['id'];
 </nav>
 
 
-<!--
-<div class="main-content">
-
-
-    <div class="home page" >
--->
 <main>
 <div class="container">
 
@@ -48,12 +49,7 @@ $id = $_SESSION['id'];
             <div class="row">
               <div class="col-sm-6 col-md-5 offset-md-1">
                 <?php
-/*
-                if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
-                {
-                  print '<br><a href = "./controllers/logout.php">Wyloguj</a></br>';
-                }
-*/
+
                 ?>
 
             </div>
@@ -77,8 +73,8 @@ $id = $_SESSION['id'];
                 <?php
 
                 $tabela = "bibliotekarze";
-                  $rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE bibliotekarz_id = '$id' ");
-
+                  //$rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE bibliotekarz_id = '$id' ");
+                  $rezultat = mysqli_query ($polaczenie, "CALL bibliotekarz_S('$id')");
                       $wiersz = mysqli_fetch_array ($rezultat);
 
                         $id_bibliotekarz = $wiersz ['id_bibliotekarz'];
@@ -92,20 +88,7 @@ $id = $_SESSION['id'];
                  ?>
 
                 <TABLE CELLPADDING=5 BORDER=1 class="tabela_Czytelnika">
-      <!--
-                <TR>
-                  <TD>Imię: </TD><TD>Jan</TD>
-                </TR>
-                <TR>
-                  <TD>Nazwisko: </TD><TD>Kowalski</TD>
-                </TR>
-                <TR>
-                  <TD>Adres: </TD><TD>ul. Zielona 4, Londek Zdrój</TD>
-                </TR>
-                <TR>
-                  <TD>Adres e-mail: </TD><TD>jan@kowalski.pl</TD>
-                </TR>
-      -->
+
 
                 <TR>
                   <TD>Imię: </TD><TD><?php  echo $bibliotekarz_imie; ?></TD>
@@ -122,22 +105,7 @@ $id = $_SESSION['id'];
 
                 <?php
 
-            /*
-                print '
-                <TR>
-                  <TD>Imię: </TD><TD>';  echo $bibliotekarz_imie; print'</TD>
-                </TR>
-                <TR>
-                  <TD>Nazwisko: </TD><TD>'; echo $bibliotekarz_nazwisko; print'</TD>
-                </TR>
-                <TR>
-                  <TD>Adres: </TD><TD>'; echo $bibliotekarz_ulica; echo " "; echo $bibliotekarz_miasto;  print'</TD>
-                </TR>
-                <TR>
-                  <TD>Adres e-mail: </TD><TD>'; echo $bibliotekarz_email; print'</TD>
-                </TR>
-                ';
-            */
+
                 ?>
 
                 </TABLE>
@@ -167,19 +135,13 @@ $id = $_SESSION['id'];
                   <TD>Imię czytelnika</TD><TD>Nazwisko czytelnika</TD>
                   <TD> </TD>
                 </TR>
-<!--
-                <TR>
-                  <TD>1</TD><TD>ABC</TD><TD>XCS</TD><TD>2017-11-07</TD><TD>2017-12-21</TD><TD>SN1_012</TD>
-                  <TD>Imię czytelnika</TD><TD>Nazwisko czytelnika</TD>
-                  <TD>
-                    <a href="./controllers/zam_wypozycz.php">Wypożycz</a></br>
-                    </TD>
-                </TR>
--->
-                <!-- TODO obsługa -->
+
+                <!-- TODO obsługa proc structured-->
                 <?php
                 $tabela = "zamowienie";
-                  $rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela");
+                $polaczenie->next_result(); // using sprocs have to do this before next call !
+                  //$rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela");
+                  $rezultat = mysqli_query ($polaczenie, "CALL zamowienieS()");
 
                   $lp = 1;
                     //  $wiersz = mysqli_fetch_array ($rezultat);
@@ -193,34 +155,23 @@ $id = $_SESSION['id'];
                         $data_zamowienia = $wiersz ['data_zamowienia'];
                     //    $zamowienie_sygnatura = $wiersz ['sygnatura']; // zamowienie_sygantura ???
                         $tabela2 = "ksiazka";
-                        $rezultat2 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela2 WHERE id_ksiazka = '$id_ksiazka' ");
+                        $polaczenie->next_result();
+                        //$rezultat2 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela2 WHERE id_ksiazka = '$id_ksiazka' ");
+                        $rezultat2 = mysqli_query ($polaczenie, "CALL bibliotekarz_Sksiazka($id_ksiazka)");
                         $wiersz2 = mysqli_fetch_array ($rezultat2);
                         $isbn = $wiersz2 ['isbn'];
                         $tytul = $wiersz2 ['tytul'];
                         $autor = $wiersz2 ['autor'];
 
                         $tabela3 = "czytelnik";
-                        $rezultat3 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela3 WHERE id_czytelnik = '$id_czytelnik' ");
+                        $polaczenie->next_result();
+                        //$rezultat3 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela3 WHERE id_czytelnik = '$id_czytelnik' ");
+                        $rezultat3 = mysqli_query ($polaczenie, "CALL bibliotekarz_Sczytelnik($id_czytelnik)");
                         $wiersz3 = mysqli_fetch_array ($rezultat3);
                         $imie_czytelnik = $wiersz3 ['imie_czytelnik'];
                         $nazwisko_czytelnik = $wiersz3 ['nazwisko_czytelnik'];
 
-                        /*
-                        // pobieranie danych książek  z tab ksiazki
-                        $tabela = 'ksiazki';
-                        $rezultat2 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE sygnatura = '$zamowienie_sygnatura' ");
-                        while ($wiersz = mysqli_fetch_array ($rezultat2)){
-                          $zamowienie_tytul = $wiersz ['tytul'];
-                          $zamowienie_autor = $wiersz ['autor'];
-                          $zamowienie_rok_wydania = $wiersz ['rok_wydania'];
-                        }
-
-                        $tabela = 'wypozyczone';
-                        $rezultat3 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE sygnatura = '$zamowienie_sygnatura' ");
-                        while ($wiersz = mysqli_fetch_array ($rezultat2)){
-                          $zamowienie_data_oddania = $wiersz ['data_oddania']; //  z tabeli wypozyczone
-                        }
-                        */
+  
 
                       //  $zamowienie_tytul = $wiersz ['zamowienie_tytul']; // TODO potem ma pobierać z tabeli ksiazki
                       //  $zamowienie_autor = $wiersz ['zamowienie_autor']; // TODO potem ma pobierać z tabeli ksiazki
@@ -233,7 +184,9 @@ $id = $_SESSION['id'];
                           <TD>";
                           print'
                             <a href="./controllers/zam_rezygnuj.php?id_ksiazka='; echo $id_ksiazka;
-                            print'">Rezygnuj z zamówienia</a></br>
+                            print'">Rezygnuj z zamówienia</a></br>';
+                            include('./controllers/wypozyczanie_bibliotekarz.php');
+                            print'
                             </TD>
                         </TR>
                         ';
@@ -258,18 +211,12 @@ $id = $_SESSION['id'];
                   <TD>Imię czytelnika</TD><TD>Nazwisko czytelnika</TD>
                   <TD> </TD>
                 </TR>
-<!--
-                <TR>
-                  <TD>1</TD><TD>ABC</TD><TD>XCS</TD><TD>2017-11-07</TD><TD>2017-12-21</TD><TD>SN1_012</TD>
-                  <TD>Imię czytelnika</TD><TD>Nazwisko czytelnika</TD>
-                  <TD>
-                    <a href="./controllers/przedluz.php">Prolongata</a></br>
-                    </TD>
-                </TR>
--->
+
                 <?php
                 $tabela = "wypozyczenia";
-                  $rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela");
+                $polaczenie->next_result();
+                  //$rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela");
+                  $rezultat = mysqli_query ($polaczenie, "CALL wypozyczeniaS()");
 
                   $lp = 1;
                     //  $wiersz = mysqli_fetch_array ($rezultat);
@@ -283,34 +230,23 @@ $id = $_SESSION['id'];
 
                     //    $zamowienie_sygnatura = $wiersz ['sygnatura']; // zamowienie_sygantura ???
                         $tabela2 = "ksiazka";
-                        $rezultat2 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela2 WHERE id_ksiazka = '$id_ksiazka' ");
+                        $polaczenie->next_result();
+                        //$rezultat2 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela2 WHERE id_ksiazka = '$id_ksiazka' ");
+                        $rezultat2 = mysqli_query ($polaczenie, "CALL bibliotekarz_Sksiazka($id_ksiazka)");
                         $wiersz2 = mysqli_fetch_array ($rezultat2);
                         $isbn = $wiersz2 ['isbn'];
                         $tytul = $wiersz2 ['tytul'];
                         $autor = $wiersz2 ['autor'];
 
                         $tabela3 = "czytelnik";
-                        $rezultat3 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela3 WHERE id_czytelnik = '$id_czytelnik' ");
+                        $polaczenie->next_result();
+                        //$rezultat3 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela3 WHERE id_czytelnik = '$id_czytelnik' ");
+                        $rezultat3 = mysqli_query ($polaczenie, "CALL bibliotekarz_Sczytelnik($id_czytelnik)");
                         $wiersz3 = mysqli_fetch_array ($rezultat3);
                         $imie_czytelnik = $wiersz3 ['imie_czytelnik'];
                         $nazwisko_czytelnik = $wiersz3 ['nazwisko_czytelnik'];
 
-                        /*
-                        // pobieranie danych książek  z tab ksiazki
-                        $tabela = 'ksiazki';
-                        $rezultat2 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE sygnatura = '$zamowienie_sygnatura' ");
-                        while ($wiersz = mysqli_fetch_array ($rezultat2)){
-                          $zamowienie_tytul = $wiersz ['tytul'];
-                          $zamowienie_autor = $wiersz ['autor'];
-                          $zamowienie_rok_wydania = $wiersz ['rok_wydania'];
-                        }
 
-                        $tabela = 'wypozyczone';
-                        $rezultat3 = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE sygnatura = '$zamowienie_sygnatura' ");
-                        while ($wiersz = mysqli_fetch_array ($rezultat2)){
-                          $zamowienie_data_oddania = $wiersz ['data_oddania']; //  z tabeli wypozyczone
-                        }
-                        */
 
                       //  $zamowienie_tytul = $wiersz ['zamowienie_tytul']; // TODO potem ma pobierać z tabeli ksiazki
                       //  $zamowienie_autor = $wiersz ['zamowienie_autor']; // TODO potem ma pobierać z tabeli ksiazki
@@ -322,7 +258,11 @@ $id = $_SESSION['id'];
                           <TD>";
                           print'
                             <a href="./controllers/przedluz.php?id_ksiazka='; echo $id_ksiazka;
-                            print'">Prolongata</a></br>
+                            print'">Prolongata</a></br>';
+                          print'
+                              <a href="./controllers/zwrot.php?id_ksiazka='; echo $id_ksiazka;
+                              print'">Zwrot</a></br>';
+                          print'
                             </TD>
                         </TR>
                         ';
@@ -341,8 +281,7 @@ $id = $_SESSION['id'];
 
           </div>
           </div>
-  <!--      </div>
-  </div> -->
+
     </div>
   </main>
   <footer>

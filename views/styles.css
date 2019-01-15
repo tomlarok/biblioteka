@@ -26,8 +26,22 @@ h2 {
 
 }
 
+h3 {
+  font-family: "Arial";
+  text-align: left;
+  color: #61969c;
+  font-size: 22px;
+  margin-top: 5px;
+  text-decoration: bold;
+}
+/*
 a:link    { color: #209781; text-decoration: none; }
 a:visited { color: #209781; }
+a:active  { color: #209781; }
+a:hover   { color: #E9B64A; }
+*/
+a:link    { color: #666666; text-decoration: bold; }
+a:visited { color: #666666; }
 a:active  { color: #209781; }
 a:hover   { color: #E9B64A; }
 
@@ -43,6 +57,13 @@ legend{
 .logo{
   width: 100%;
   height: 200px;
+}
+
+.icon{
+  width: 20px;
+  height: 20px;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 .frame-alert{
@@ -157,7 +178,15 @@ input [type=submit]{
   background-image: url("img/baner.jpg");
 }
 
-
+.footer-author{
+  margin:0px;
+  padding:3px;
+  /*background-color: #1da1f2;*/
+  background-color: #f0f0f0;
+  text-align: center;
+  padding: 14px 16px;
+  color: #b4b4b4;
+}
 
 /* Panel z linkami menu*/
 .panel{
@@ -165,6 +194,40 @@ margin:0px;
 padding:3px;
 background-color: #f2f2f2;
 }
+
+.subpanel{
+  margin:0px;
+  padding:3px;
+
+  list-style-type: none;
+  padding: 0;
+  overflow: hidden;
+
+  color: white;
+  text-align: center;
+  padding: 14px 16px;
+  text-decoration: none;
+
+  font-size: 80%;
+  /*background-color: #aaa; */
+  /* background-color: #e6fff2;*/
+  background-color: #d2a679;
+  list-style-type: none;
+  padding: 0;
+  overflow: hidden;
+}
+
+ul.subpanel li{
+  display: inline-block;
+  padding:8px;
+}
+
+ul.subpanel li a:hover:not(.active) {background-color: #bf8040;} /*111 #bf8040 #777dff
+kolor linku po najechaniu kursorem*/
+
+ul.subpanel li a.active {background-color: #a67c99;} /*4CAF50 link aktywny */
+
+ul.subpanel li.right {float: right;}
 
 /* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 /* usuniete
@@ -192,7 +255,7 @@ ul.topnav {
 list-style-type: none;
 padding: 0;
 overflow: hidden;
-background-color: #69b6fd; /*333  kolor paska z linkami*/
+background-color: #996633; /* #69b6fd 333  kolor paska z linkami*/
 }
 
 ul.topnav li {float: left;}
@@ -205,7 +268,7 @@ padding: 14px 16px;
 text-decoration: none;
 }
 
-ul.topnav li a:hover:not(.active) {background-color: #777dff;} /*111
+ul.topnav li a:hover:not(.active) {background-color: #bf8040;} /*111 #bf8040 #777dff
 kolor linku po najechaniu kursorem*/
 
 ul.topnav li a.active {background-color: #a67c99;} /*4CAF50 link aktywny */
@@ -220,10 +283,18 @@ ul.topnav li {float: none;}
 ul.sub {
 font-size: 80%;
 background-color: #aaa;
+list-style-type: none;
+padding: 0;
+overflow: hidden;
 }
 
 ul.sub li a {
 padding: 4px 16px;
+display: inline-block; /*nie wyswietla w jednej linii */
+color: white;
+text-align: center;
+text-decoration: none;
+
 }
 /* -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=- */
 

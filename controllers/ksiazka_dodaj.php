@@ -51,10 +51,15 @@ $num_rows = mysqli_num_rows($result);
 $ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (tytul, autor)
 VALUES ('$tytul', '$autor') ");
 */
-
+/* // OK zamiast structured procedure
 $ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (tytul, autor, isbn, wydawnictwo, opis, stron, rok_wydania)
 VALUES ('$tytul', '$autor', '$sygnatura', '$wydawnictwo', '$opis', '$stron', '$rok') ");
+*/
+//$ins = mysqli_query ($polaczenie, "CALL ksiazka_dodajI('$tytul', '$autor', '$sygnatura', '$wydawnictwo', '$kategoria', '$opis', '$stron', '$rok') ");
 
+$ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (id_ksiazka, id_kategoria, isbn, tytul, autor, stron, wydawnictwo, rok_wydania, opis, keywords, dostepnosc)
+VALUES (NULL, '$kategoria', '$sygnatura', '$tytul', '$autor', '$stron', '$wydawnictwo', '$rok', '$opis', '$keywords', '');");
+// VALUES (NULL, '1', '9827127483214', 'Ogniem i mieczem', 'Henryk Sienkiewicz', '378', 'Polska Klasyka', '2007', NULL, '', '');");
 /*
 $ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (tytul, autor, isbn, wydawnictwo, kategoria, keywords, opis, stron, rok_wydania)
 VALUES ('$tytul', '$autor', '$sygnatura', '$wydawnictwo', '$kategoria', '$keywords', '$opis', $stron, $rok) ");

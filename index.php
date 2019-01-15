@@ -7,16 +7,7 @@
   <?php
   @session_start();
   require_once "./controllers/connect.php";
-/*
-    // zalogowany jako??
-    if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
-    {
-      print '<p align = "right">';
-      echo "Witaj ".$_SESSION['user'];
-      print '<br><a href = "./controllers/logout.php">Wyloguj</a></br>';
-      print '</p>';
-    }
-*/
+
   ?>
 
 <nav>
@@ -24,12 +15,6 @@
 </nav>
 
 
-<!--
-<div class="main-content">
-
-
-    <div class="home page" >
--->
 <main>
 <div class="container">
 
@@ -42,12 +27,7 @@
             <div class="row">
               <div class="col-sm-6 col-md-5 offset-md-1">
                 <?php
-/*
-                if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
-                {
-                  print '<br><a href = "./controllers/logout.php">Wyloguj</a></br>';
-                }
-*/
+
                 ?>
 
             </div>
@@ -99,8 +79,7 @@
               </div>
           </div>
           </div>
-  <!--      </div>
-  </div> -->
+
     </div>
   </main>
   <footer>

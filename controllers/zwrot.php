@@ -30,33 +30,28 @@ else{
 
   $tabela = "wypozyczenia";
     //$rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE id_ksiazka = '$id_ksiazka' ");
-    $rezultat = mysqli_query ($polaczenie, "CALL przedluz_Swypozyczenia('$id_ksiazka')");
+    /*
+    $rezultat = mysqli_query ($polaczenie, "CALL zwrotD('$id_ksiazka')");
     $num_rows = mysqli_num_rows($rezultat);
     if ($num_rows == 1){  //idywidualny login? - kontrola
+    */
   /*
     $ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (id_ksiazka, data_zwrotu)
     VALUES ('$id_ksiazka', NOW() ) ");
   */
-    $ins = mysqli_query ($polaczenie, "CALL przedluz_Iwypozyczenia('$id_ksiazka')");
-    /*
-    $ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (id_czytelnik, id_ksiazka, data_zamowienia, data_odbioru, data_zwrotu)
-    VALUES ('$id_czytelnik', '$id_ksiazka', NOW(), NOW(), NOW() ) ");
-    */
-    //$ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (login, haslo, nazwa_klienta) VALUES ('$rejestracja_login ', '$rejestracja_haslo', '$rejestracja_nazwa') ");
-// TODO
-    $upd = mysqli_query ($polaczenie, "UPDATE $db_name.$tabela SET data_zwrotu = NOW() WHERE id_ksiazka = '$id_ksiazka' ");  // TODO dodawanie dni do daty, o ile?
+    $upd = mysqli_query ($polaczenie, "CALL zwrot_D($id_ksiazka)");
 
       //header('Location: ../index.php ');
       print '<link href="../views/styles.css" rel="stylesheet">';
 
       print '<div class="frame-alert">';
 
-      if($upd) echo "Zmiany zatwierdozne. Prolongata dokonana. ";
-        else echo "Błąd, nie udało się zmienić rekordu ";
+      if($upd) echo "Zmiany zatwierdozne. Zwrot dokonany. ";
+        else echo "Błąd, nie udało się dokonać zwrotu ";
 
       //print'<a href = "../index.php">Powrót</a>';
       print'
-      <button onclick="goBack()">Powrót</button>
+      <br><button onclick="goBack()">Powrót</button>
 
      <script>
      function goBack() {
@@ -78,5 +73,5 @@ else{
 
   }
 */
-  }
+//  }
 }

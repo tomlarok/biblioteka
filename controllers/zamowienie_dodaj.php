@@ -21,7 +21,7 @@ if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
       else{
 
         $id_ksiazka = $_GET['id_ksiazka'];
-        $id_czytelnik = $_SESSION['id'];
+        $id_czytelnik = $_SESSION['id_czytelnik'];
 
         // TODO Test
         echo $id_ksiazka;
@@ -29,11 +29,27 @@ if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
         echo $id_czytelnik;
 
         $tabela = "zamowienie";
-          $rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE id_ksiazka = '$id_ksiazka' ");
+          //$rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE id_ksiazka = '$id_ksiazka' ");
+          $rezultat = mysqli_query ($polaczenie, "CALL zam_rezygnujS($id_ksiazka)");
+          // TODO spr czy w tab ksiazka jest dostepnosc 'Tak'
           $num_rows = mysqli_num_rows($rezultat);
-          if ($num_rows < 1){  //idywidualny login? - kontrola
+          $polaczenie->next_result();
+          $rezultat_dostepnosc = mysqli_query ($polaczenie, "CALL zamowienie_dodajSk_dostepnosc($id_ksiazka)");
+          $wiersz = mysqli_fetch_array ($rezultat_dostepnosc);
+          $dostepnosc = $wiersz ['dostepnosc'];
+
+          $num_rows = mysqli_num_rows($rezultat);
+          if ($num_rows < 1 && $dostepnosc != "Tak"){  //idywidualny login? - kontrola
+    /*
           $ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (id_czytelnik, id_ksiazka, data_zamowienia)
           VALUES ($id_czytelnik, $id_ksiazka, NOW() )");
+    */
+          $polaczenie->next_result();
+          $ins = mysqli_query ($polaczenie, "CALL zamowienie_dodajI($id_czytelnik, $id_ksiazka)");
+        /*
+          $polaczenie->next_result();
+          $upd = mysqli_query ($polaczenie, "CALL zamowienie_dodajU($id_czytelnik, $id_ksiazka)");
+        */
           //$ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (id_czytelnik, id_ksiazka, data_zamowienia, data_odbioru, data_zwrotu) VALUES ('$id_czytelnik', '$id_ksiazka', NOW(), NOW(), NOW() ) ");
           //$ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (login, haslo, nazwa_klienta) VALUES ('$rejestracja_login ', '$rejestracja_haslo', '$rejestracja_nazwa') ");
 
