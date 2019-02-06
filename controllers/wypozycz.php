@@ -23,7 +23,7 @@ if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
         }
 
         $id_ksiazka = validate($_GET['id_ksiazka']);
-        $id_czytelnik  = validate($_GET['id_czytelnik ']);
+        $id_czytelnik  = validate($_GET['id_czytelnik']);
 
 
         $tabela = "zamowienie";
@@ -31,7 +31,7 @@ if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
           $rezultat = mysqli_query ($polaczenie, "CALL wypozycz_Szamowienie($id_ksiazka, $id_czytelnik)");
           $num_rows = mysqli_num_rows($rezultat);
           if ($num_rows == 1){
-          echo "<br>Num rows: .$num_rows.</br>";
+
           $tabela2 = "wypozyczenia";
 
           $date = new DateTime('NOW', new DateTimeZone('UTC'));
