@@ -15,8 +15,7 @@ if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
 
 require_once "connect.php"; //by moć pobrać dane do logowania
 
-$polaczenie = mysqli_connect ($db_host, $db_user, $db_password);
-mysqli_select_db ($polaczenie, $db_name);
+include('polaczenie.php');
 
 if ($polaczenie->connect_errno!=0)
 {
@@ -24,38 +23,41 @@ if ($polaczenie->connect_errno!=0)
 }
 else{
 
-  $id_ksiazka = $_GET['id_ksiazka'];
-  // TODO Test
-//  echo $id_ksiazka;
+  // funkcja walidacji
+  function validate($str) {
+    return trim(htmlspecialchars($str));
+  }
+
+  $id_ksiazka = validate($_GET['id_ksiazka']);
 
   $tabela = "wypozyczenia";
-    //$rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE id_ksiazka = '$id_ksiazka' ");
+
     $rezultat = mysqli_query ($polaczenie, "CALL przedluz_Swypozyczenia('$id_ksiazka')");
     $num_rows = mysqli_num_rows($rezultat);
-    if ($num_rows == 1){  //idywidualny login? - kontrola
-  /*
-    $ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (id_ksiazka, data_zwrotu)
-    VALUES ('$id_ksiazka', NOW() ) ");
-  */
-    $ins = mysqli_query ($polaczenie, "CALL przedluz_Iwypozyczenia('$id_ksiazka')");
-    /*
-    $ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (id_czytelnik, id_ksiazka, data_zamowienia, data_odbioru, data_zwrotu)
-    VALUES ('$id_czytelnik', '$id_ksiazka', NOW(), NOW(), NOW() ) ");
-    */
-    //$ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (login, haslo, nazwa_klienta) VALUES ('$rejestracja_login ', '$rejestracja_haslo', '$rejestracja_nazwa') ");
-// TODO
-    $upd = mysqli_query ($polaczenie, "UPDATE $db_name.$tabela SET data_zwrotu = NOW() WHERE id_ksiazka = '$id_ksiazka' ");  // TODO dodawanie dni do daty, o ile?
+    if ($num_rows == 1){
 
-      //header('Location: ../index.php ');
+    $date = new DateTime('NOW', new DateTimeZone('UTC'));
+    $date->add(new DateInterval('P30D'));
+    $data_zwrotu= $date->format('Y-m-d');
+    echo $data_zwrotu;
+    // nowe połączenie
+    include('polaczenie.php');
+
+    if ($polaczenie->connect_errno!=0)
+    {
+        echo "Error: ".$polaczenie->connect_errno;
+    }
+
+    $upd = mysqli_query ($polaczenie, "CALL przedluz_Uwypozyczenia('$id_ksiazka', '$data_zwrotu')");
+
       print '<link href="../views/styles.css" rel="stylesheet">';
 
       print '<div class="frame-alert">';
 
-      if($upd) echo "Zmiany zatwierdozne. Prolongata dokonana. ";
-        else echo "Błąd, nie udało się zmienić rekordu ";
+      if($upd) echo "Zmiany zatwierdzone. Prolongata dokonana. ";
+        else echo "Błąd, nie udało się dokonać prolongaty. ";
 
-      //print'<a href = "../index.php">Powrót</a>';
-      print'
+      print'</br>
       <button onclick="goBack()">Powrót</button>
 
      <script>
@@ -68,15 +70,7 @@ else{
 
       print '</div>';
 
-/*
   } else {
-    print '<link href="../views/styles.css" rel="stylesheet">';
-
-    print '<div class="frame-alert">';
-    echo "Nie można zamówić dokonać danej operacji";
-    print '</div>';
-
-  }
-*/
+    echo "Błąd, może nie być takiej pozycji lub błędy danych książek";
   }
 }

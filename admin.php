@@ -15,12 +15,6 @@
 </nav>
 -->
 
-<!--
-<div class="main-content">
-
-
-    <div class="home page" >
--->
 <main>
 <div class="container">
 
@@ -32,15 +26,13 @@
 
             <div class="row">
               <div class="col-sm-6 col-md-5 offset-md-1">
-                <?php
 
-                ?>
 
             </div>
 
             <div class="col-sm-6 col-md-5">
               <figure>
-              Admin - panel zarzadzania
+              Admin - panel zarządzania
             </figure>
             </div>
 
@@ -48,11 +40,11 @@
 
               <div id= "wyszukiwarka">
                 <h3> Wyszukiwarka książek </h3>
-                <?php //include('wyszukiwarka.php'); ?>
+                <?php include('wyszukiwarka.php'); ?>
               </div>
 
               <div id= "dodaj_ksiazke">
-                <h3> Dodaj książki </h3>
+                <h3> Dodaj książkę </h3>
                 <?php include('./controllers/dodaj_ksiazke_form.php'); ?>
               </div>
 
@@ -60,12 +52,15 @@
                 <h3> Dodaj czytelnika <h3>
                   <?php include("./controllers/dodaj_czytelnika.php"); ?>
               </div>
-
+              <!-- usuwanie użytkowników - poprzez szukaj/konto czytelnika/[usun konto] -->
+              <div id = "bib-szukaj-czyt">
+                <?php include("./controllers/szukaj_czytelnika_form.php"); ?>
+              </div>
 
           </div>
-          </div>
+        </div> <!-- end row -->
 
-    </div>
+    </div> <!-- end container -->
   </main>
   <footer>
   <?php include('footer.php'); ?>

@@ -11,8 +11,7 @@ if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
 
       require_once "connect.php"; //by moć pobrać dane do logowania
 
-      $polaczenie = mysqli_connect ($db_host, $db_user, $db_password);
-      mysqli_select_db ($polaczenie, $db_name);
+      include('polaczenie.php');;
 
       if ($polaczenie->connect_errno!=0)
       {
@@ -20,18 +19,39 @@ if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
       }
       else{
 
-        $id_ksiazka = $_GET['id_ksiazka'];
-        $id_czytelnik = $_SESSION['id_czytelnik'];
+        // funkcja walidacji
+        function validate($str) {
+          return trim(htmlspecialchars($str));
+        }
 
-        // TODO Test
-        echo $id_ksiazka;
-        echo "\n";
-        echo $id_czytelnik;
+        $id_ksiazka = validate($_GET['id_ksiazka']);
+
+        if (isset($_SESSION['bibliotekarz'])){ //  gdy wypozycza bibliotekarz ??
+          $id_czytelnik = 2;
+          $czytelnik = false;
+        }else{
+
+          $id_czytelnik = @$_SESSION['id_czytelnik'];
+          $czytelnik = true;
+        }
+
+        if (isset($_SESSION['konto_aktywne'])){
+          $konto_aktywne = $_SESSION['konto_aktywne'];
+          if ($konto_aktywne == "Nie" && $czytelnik == true){
+            print '<link href="../views/styles.css" rel="stylesheet">';
+
+            print '<div class="frame-alert">';
+            echo "Konto zablokowane. Nie można zamówić pozycji. </br>";
+              skryptpowrotu();
+            exit();
+          }
+        }
+
 
         $tabela = "zamowienie";
-          //$rezultat = mysqli_query ($polaczenie, "SELECT * FROM $db_name.$tabela WHERE id_ksiazka = '$id_ksiazka' ");
+
           $rezultat = mysqli_query ($polaczenie, "CALL zam_rezygnujS($id_ksiazka)");
-          // TODO spr czy w tab ksiazka jest dostepnosc 'Tak'
+
           $num_rows = mysqli_num_rows($rezultat);
           $polaczenie->next_result();
           $rezultat_dostepnosc = mysqli_query ($polaczenie, "CALL zamowienie_dodajSk_dostepnosc($id_ksiazka)");
@@ -39,21 +59,19 @@ if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
           $dostepnosc = $wiersz ['dostepnosc'];
 
           $num_rows = mysqli_num_rows($rezultat);
-          if ($num_rows < 1 && $dostepnosc != "Tak"){  //idywidualny login? - kontrola
-    /*
-          $ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (id_czytelnik, id_ksiazka, data_zamowienia)
-          VALUES ($id_czytelnik, $id_ksiazka, NOW() )");
-    */
-          $polaczenie->next_result();
-          $ins = mysqli_query ($polaczenie, "CALL zamowienie_dodajI($id_czytelnik, $id_ksiazka)");
-        /*
-          $polaczenie->next_result();
-          $upd = mysqli_query ($polaczenie, "CALL zamowienie_dodajU($id_czytelnik, $id_ksiazka)");
-        */
-          //$ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (id_czytelnik, id_ksiazka, data_zamowienia, data_odbioru, data_zwrotu) VALUES ('$id_czytelnik', '$id_ksiazka', NOW(), NOW(), NOW() ) ");
-          //$ins = mysqli_query ($polaczenie, "INSERT INTO $db_name.$tabela (login, haslo, nazwa_klienta) VALUES ('$rejestracja_login ', '$rejestracja_haslo', '$rejestracja_nazwa') ");
 
-            //header('Location: ../index.php ');
+          if ($num_rows < 1 && $dostepnosc == "Tak"){
+
+          // Dodawanie daty odbioru
+
+          // Dodanie 30 minut do daty zamowienia w celu ustalenia czasu odbioru zamowienia
+          $date = new DateTime('NOW', new DateTimeZone('UTC'));
+          $date->add(new DateInterval('PT2H30M'));  //dodanie 30 minut i 2 h róznicy czasu dla stefy +2GMT
+          $data_odbioru = $date->format('Y-m-d H:i:s');
+
+          $polaczenie->next_result();
+          $ins = mysqli_query ($polaczenie, "CALL zamowienie_dodajI($id_czytelnik, $id_ksiazka, '$data_odbioru')");
+
             print '<link href="../views/styles.css" rel="stylesheet">';
 
             print '<div class="frame-alert">';
@@ -61,51 +79,14 @@ if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
             if($ins) echo "Zamówienie zostało przyjęte ";
               else echo "Błąd, nie udało się dodać zamówienia ";
               skryptpowrotu();
-            //print'<a href = "../index.php">Powrót</a>';
-            /*
-            print'
-            <button onclick="goBack()">Powrót</button>
 
-           <script>
-           function goBack() {
-               window.history.back();
-           }
-           </script>
-            ';
-
-
-            print '</div>';
-            */
-      /*
-        } else {
-          print '<link href="../views/styles.css" rel="stylesheet">';
-
-          print '<div class="frame-alert">';
-          echo "Nie można zamówić danej pozycji";
-          print '</div>';
-
-        }
-      */
     } else {
       print '<link href="../views/styles.css" rel="stylesheet">';
 
       print '<div class="frame-alert">';
       echo "Nie można wypożyczyć. Pozycja jest już wypożyczona";
       skryptpowrotu();
-/*
-      //print'<a href = "../index.php">Powrót</a>';
-      print'
-      <button onclick="goBack()">Powrót</button>
 
-     <script>
-     function goBack() {
-         window.history.back();
-     }
-     </script>
-      ';
-
-
-      print '</div>'; */
     }
 
     }
@@ -115,20 +96,7 @@ if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
       print '<div class="frame-alert">';
       echo "Zaloguj się by zamówić pozycję. <br>";
       skryptpowrotu();
-      /*
-      print'
-      <button onclick="goBack()">Powrót</button>
 
-     <script>
-     function goBack() {
-         window.history.back();
-     }
-     </script>
-      ';
-      print '</div>';
-*/
-      //  header('Location: ../index.php');
-      //  exit(); //wyjscie z strony bez wczytania ponizszych linije kodu
     }
 
     function skryptpowrotu(){
@@ -137,7 +105,8 @@ if ((isset($_SESSION['zalogowany'])) && ($_SESSION['zalogowany']==true))
 
      <script>
      function goBack() {
-         window.history.back();
+        // window.history.back(); // pyta sie o ponowne przeslanie danych z form
+         window.location.assign("../index.php")
      }
      </script>
       ';

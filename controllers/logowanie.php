@@ -20,8 +20,34 @@
     }
     else
     {        // WARTOŚCI LOGIN i HASŁO Z FORMULARZA
-        $login = $_POST['login'];
-        $haslo = $_POST['password'];
+
+      // funkcja walidacji
+      function validate($str) {
+        // trim -Remove characters from both sides of a string
+      	return trim(htmlspecialchars($str)); /*przeszukują ciąg znaków, podany jako argument, w celu znalezienia znaczników HTML i PHP.
+         HTMLSPECIALCHARS zamienia znaki specialne (<,>,’,”,&) na ich „bezpieczne odpowiedniki”. */
+      }
+
+      // spr czy dane zostały przesłane i czy nie są puste
+      if (!isset($_POST['login']) && empty($_POST["login"])){
+        echo "Brak podanego login";
+      } else {
+        $login = validate($_POST['login']);
+        if (strlen($login) > 100) {  // Return the length of the string
+          echo "Za długi login";
+          exit();
+        }
+      }
+
+      if (!isset($_POST['password']) && empty($_POST['password'])){
+        echo "Brak podanego haslo";
+      } else {
+        $haslo = validate($_POST['password']);
+        if (strlen($haslo) > 100) {  // Return the length of the string
+          echo "Za długi - haslo";
+          exit();
+        }
+      }
 
         $login = htmlentities($login, ENT_QUOTES, "UTF-8"); //spr czy nie wstrzyknieto zapytania SQL, Wstawia encje HTMLa
         $haslo = htmlentities($haslo, ENT_QUOTES, "UTF-8");
@@ -30,7 +56,7 @@
 
 
         if ($rezultat = @$polaczenie->query(
-          //sprintf("SELECT * FROM users WHERE login='%s' AND haslo='%s'",
+
         sprintf("SELECT * FROM logowanie WHERE login='%s' AND password='%s'",
         mysqli_real_escape_string($polaczenie,$login),  //f zabezpiecza przez InjectSQL (- ' itp')
         mysqli_real_escape_string($polaczenie,$haslo))))
@@ -54,18 +80,6 @@
                 unset($_SESSION['blad']); //usuwanie zmiennej blad. Po loogwaniu jest niepotrzebna.
                 $rezultat->free_result();
 
-                // Zapis IP do BD
-                /*
-                $user = $_SESSION['user']; //user login,
-
-               // $slc = mysqli_query ($polaczenie, "SELECT * FROM $db_name.logi WHERE login = '$user'");
-                 $upd = mysqli_query ($polaczenie, "UPDATE $db_name.users SET data_logowania = NOW() WHERE login = '$user' ");
-                 */
-                 /*
-                if($upd) echo "Rekord został zmieniony poprawnie ";
-                        else echo "Błąd, nie udało się dodać nowego rekordu ";
-                        */
-            // TODO Jak sposób weryfikacji bibliotekarza?
                 if ( substr($login, 0, 12) == ("bibliotekarz"))
                 {
                   setcookie('bibliotekarz', $nick, time() + 60*60*3);  // dodanie ciacha bibliotekarz

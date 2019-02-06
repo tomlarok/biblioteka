@@ -11,10 +11,12 @@
   ?>
 
 <nav>
-  <?php include('nav.php'); ?>
+    <?php include('banner.php'); ?>
 </nav>
 
-
+<nav>
+  <?php include('nav.php'); ?>
+</nav>
 
 <main>
 <div class="container">
@@ -28,6 +30,10 @@
             <div class="row">
               <div class="col-sm-6 col-md-5 offset-md-1">
                 <?php
+
+                if(isset($_SESSION['konto_aktywne'])){
+                  $konto_aktywne = $_SESSION['konto_aktywne'];
+                }
 
                 ?>
 
@@ -49,7 +55,7 @@
               <div id="lista-wyszukiwania">
                 <h3> Wyniki wyszukiwania </h3>
 
-                <TABLE CELLPADDING=5 BORDER=1 class="tabela_wyszukiwania">
+                <TABLE CELLPADDING=5 BORDER=1 class="tabela">
                 <TR class="naglowekTabela">
                   <TD>Lp</TD><TD>Tytuł</TD><TD>Autor</TD><TD>Kategoria</TD><TD>Wydawnictwo</TD><TD>Rok wydania</TD><TD>Liczba stron</TD>
                   <TD>Opis</TD><TD>Słowa kluczowe</TD><TD></TD>
@@ -62,9 +68,9 @@
               </div>
 
           </div>
-          </div>
+        </div> <!-- end div row -->
 
-    </div>
+    </div> <!-- end div container -->
   </main>
   <footer>
   <?php include('footer.php'); ?>

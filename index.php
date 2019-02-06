@@ -9,11 +9,10 @@
   require_once "./controllers/connect.php";
 
   ?>
+  <!-- Banner -->
+  <?php include('banner.php'); ?>
 
-<nav>
   <?php include('nav.php'); ?>
-</nav>
-
 
 <main>
 <div class="container">
@@ -26,11 +25,8 @@
 
             <div class="row">
               <div class="col-sm-6 col-md-5 offset-md-1">
-                <?php
 
-                ?>
-
-            </div>
+              </div>
 
             <div class="col-sm-6 col-md-5">
               <figure>
@@ -44,7 +40,21 @@
                 <h3> Wyszukiwarka książek </h3>
                 <?php include('wyszukiwarka.php'); ?>
               </div>
+            </div>
 
+            <div class="col-sm-6 col-md-5">
+              <div id="wyszukaj_image">
+                  <img src= "./views/img/search.png" class="image_text" alt="Brak loga?" />
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-md-5">
+              <div id="kontakt_image">
+                <img src= "./views/img/contact.png" class="image_text" alt="Brak loga?" />
+              </div>
+            </div>
+
+            <div class="col-sm-6 col-md-5">
               <div id="kontakt">
                 <h3> Kontakt </h3>
                 <p>
@@ -60,7 +70,10 @@
                 </p>
 
               </div>
+            </div>
 
+
+            <div class="col-sm-6 col-md-5">
               <div id="o_nas">
                 <h3> O nas </h3>
 
@@ -77,10 +90,17 @@
                 </p>
 
               </div>
-          </div>
-          </div>
+            </div>
 
-    </div>
+            <div class="col-sm-6 col-md-5">
+              <div id="o_nas_image">
+                <img src= "./views/img/About-Us-Library.png" class="image_text" alt="Brak loga?" />
+              </div>
+            </div>
+
+          </div>  <!-- end div row -->
+      </div> <!-- end div container -->
+
   </main>
   <footer>
   <?php include('footer.php'); ?>
